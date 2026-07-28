@@ -76,11 +76,69 @@ def _avg_text_length(series: pd.Series) -> float:
     return float(cleaned.str.len().mean())
 
 
+NUMERIC_RE = r"^-?\d+(\.\d+)?$"
+
+
+def _looks_like_feedback_text(series: pd.Series, min_avg_words: float = 3.0, max_numeric_ratio: float = 0.3) -> bool:
+    """
+    Heuristic check that a column actually holds natural-language feedback/comments,
+    rather than numeric ratings, codes, or short labels that merely happened to match
+    a feedback-like column name (e.g. a "Feedback Score" column of 1-5 ratings, or a
+    file that isn't feedback data at all).
+    """
+    cleaned = series.dropna().astype(str).str.strip()
+    cleaned = cleaned[cleaned != ""]
+    if len(cleaned) == 0:
+        return False
+    avg_words = cleaned.str.split().str.len().mean()
+    numeric_ratio = cleaned.str.match(NUMERIC_RE).mean()
+    return avg_words >= min_avg_words and numeric_ratio <= max_numeric_ratio
+
+
+NOT_FEEDBACK_FILE_ERROR = (
+    "This file doesn't look like feedback data — no column with free-text comments, "
+    "reviews, or remarks was found. Please upload a file that includes a feedback/comments "
+    "column containing actual sentences (not just IDs, numbers, or short codes)."
+)
+
+# The app only analyzes files matching the expected feedback-report export: a header
+# row containing an ID column, a content-reference ID column, a free-text feedback
+# column, and a reply-text column. Each entry is the set of words that must all appear
+# (in any order) in some column name for that required column to be considered present.
+REQUIRED_SCHEMA_COLUMNS = [
+    ("feedback id", {"feedback", "id"}),
+    ("content id", {"content", "id"}),
+    ("reply text", {"reply", "text"}),
+]
+
+
+def _normalize_col(name) -> set:
+    return set(str(name).lower().replace("_", " ").replace("-", " ").split())
+
+
+def _missing_schema_columns(columns) -> List[str]:
+    normalized = [_normalize_col(c) for c in columns]
+    missing = []
+    for label, required_words in REQUIRED_SCHEMA_COLUMNS:
+        if not any(required_words <= words for words in normalized):
+            missing.append(label)
+    return missing
+
+
+NOT_EXPECTED_FORMAT_ERROR = (
+    "This file doesn't match the expected feedback report format. It must include "
+    "'Feedback Id', 'Content Id', a feedback text column, and 'Reply Text' columns. "
+    "Missing: {missing}. Available columns: {available}"
+)
+
+
 def read_excel_feedback(file_bytes: bytes, feedback_col: str = "feedback"):
     """
     Read an Excel file and return (df, matched_column_name, available_columns).
     Intelligently identifies the actual feedback text column, excluding ID/Date/Category columns,
     and falling back to the column with the highest average sentence text length.
+    Raises ValueError if the file doesn't match the expected feedback report schema, or
+    doesn't appear to contain real feedback text at all.
     """
     header_row = _find_header_row(file_bytes, feedback_col)
 
@@ -93,17 +151,26 @@ def read_excel_feedback(file_bytes: bytes, feedback_col: str = "feedback"):
         raise ValueError("Excel file is empty or has no columns.")
 
     available_cols = [str(c).strip() for c in df.columns]
+
+    missing = _missing_schema_columns(available_cols)
+    if missing:
+        raise ValueError(NOT_EXPECTED_FORMAT_ERROR.format(missing=", ".join(missing), available=available_cols))
+
     target_user_input = feedback_col.lower().strip()
+
+    def _finalize(matched_col):
+        if not _looks_like_feedback_text(df[matched_col]):
+            raise ValueError(NOT_FEEDBACK_FILE_ERROR)
+        df_ret = df.rename(columns={matched_col: "feedback"})
+        df_ret["feedback"] = df_ret["feedback"].astype(str).str.strip()
+        df_ret = df_ret[df_ret["feedback"].notna() & (df_ret["feedback"] != "") & (df_ret["feedback"] != "nan")].reset_index(drop=True)
+        return df_ret, str(matched_col), available_cols
 
     # Step 1: Check if user specifically requested a non-default column name (and it exists)
     if target_user_input != "feedback":
         col_map = {str(c).lower().strip(): c for c in df.columns}
         if target_user_input in col_map:
-            matched_col = col_map[target_user_input]
-            df_ret = df.rename(columns={matched_col: "feedback"})
-            df_ret["feedback"] = df_ret["feedback"].astype(str).str.strip()
-            df_ret = df_ret[df_ret["feedback"].notna() & (df_ret["feedback"] != "") & (df_ret["feedback"] != "nan")].reset_index(drop=True)
-            return df_ret, str(matched_col), available_cols
+            return _finalize(col_map[target_user_input])
 
     # Step 2: Search for non-metadata candidate columns by feedback keywords
     non_meta_cols = [c for c in df.columns if not _is_metadata_col(str(c))]
@@ -130,13 +197,20 @@ def read_excel_feedback(file_bytes: bytes, feedback_col: str = "feedback"):
             if matched_col is not None:
                 break
 
-    # Step 3: Text length disambiguation
-    col_lengths = {c: _avg_text_length(df[c]) for c in df.columns}
+    # A keyword-matched column name is only trustworthy if its content actually
+    # looks like feedback text (rules out e.g. a "Feedback Score" numeric column).
+    if matched_col is not None and not _looks_like_feedback_text(df[matched_col]):
+        matched_col = None
 
-    # If matched_col is None OR if matched_col average text length is very low (< 5 chars, likely numbers/IDs),
-    # pick the non-metadata column with the highest average text length
-    if matched_col is None or col_lengths.get(matched_col, 0) < 5.0:
-        valid_candidates = [c for c in df.columns if col_lengths.get(c, 0) > 0]
+    # Step 3: Text length disambiguation — fall back to the non-metadata column
+    # with the highest average text length, but only among columns that actually
+    # look like feedback text.
+    if matched_col is None:
+        col_lengths = {c: _avg_text_length(df[c]) for c in df.columns}
+        valid_candidates = [
+            c for c in df.columns
+            if col_lengths.get(c, 0) > 0 and _looks_like_feedback_text(df[c])
+        ]
         if valid_candidates:
             sorted_cols = sorted(
                 valid_candidates,
@@ -146,16 +220,10 @@ def read_excel_feedback(file_bytes: bytes, feedback_col: str = "feedback"):
             matched_col = sorted_cols[0]
 
     if matched_col is None:
-        raise ValueError(
-            f"Could not find a valid feedback text column. Available columns: {available_cols}"
-        )
+        raise ValueError(NOT_FEEDBACK_FILE_ERROR)
 
-    logger.info(f"Selected feedback column: '{matched_col}' (avg text len: {col_lengths.get(matched_col, 0):.1f})")
-
-    df_ret = df.rename(columns={matched_col: "feedback"})
-    df_ret["feedback"] = df_ret["feedback"].astype(str).str.strip()
-    df_ret = df_ret[df_ret["feedback"].notna() & (df_ret["feedback"] != "") & (df_ret["feedback"] != "nan")].reset_index(drop=True)
-    return df_ret, str(matched_col), available_cols
+    logger.info(f"Selected feedback column: '{matched_col}'")
+    return _finalize(matched_col)
 
 
 def build_summary(df: pd.DataFrame) -> Dict[str, Any]:
