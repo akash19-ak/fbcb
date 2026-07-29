@@ -7,6 +7,9 @@ import UploadZone from './components/UploadZone';
 import ProcessingView from './components/ProcessingView';
 import ResultsDashboard from './components/ResultsDashboard';
 
+// Served from /public — a missing file here 404s quietly instead of breaking the build.
+const symbiosisBg = '/symbiosis-bg.jpg';
+
 const PRIMARY_API = '/api';
 const FALLBACK_API = 'http://127.0.0.1:8000/api';
 
@@ -126,7 +129,7 @@ export default function App() {
   };
 
   return (
-    <div className="app">
+    <div className="app" style={{ '--home-bg-image': `url(${symbiosisBg})` }}>
       <header className="header">
         <div className="header-logo">
           <div className="header-logo-icon">🧠</div>

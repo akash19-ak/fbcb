@@ -56,6 +56,15 @@ for _ in range(25):
     rows.append({"feedback": random.choice(NEUTRAL_FEEDBACKS)})
 
 random.shuffle(rows)
-df = pd.DataFrame(rows)
+
+# The API only accepts files matching the expected feedback-report export schema
+# (Feedback Id, Content Id, a feedback text column, Reply Text) — see
+# REQUIRED_SCHEMA_COLUMNS in app/services/excel_service.py.
+df = pd.DataFrame({
+    "Feedback Id": range(1, len(rows) + 1),
+    "Content Id": [random.randint(1000, 9999) for _ in rows],
+    "Feedback Text": [r["feedback"] for r in rows],
+    "Reply Text": ["" for _ in rows],
+})
 df.to_excel("sample_feedback.xlsx", index=False)
 print(f"✅ Generated sample_feedback.xlsx with {len(df)} rows.")

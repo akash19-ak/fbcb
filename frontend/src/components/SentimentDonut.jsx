@@ -38,11 +38,11 @@ export default function SentimentDonut({ summary }) {
     const d = payload[0].payload;
     return (
       <div style={{
-        background: 'rgba(15,15,35,0.95)', border: '1px solid rgba(255,255,255,0.1)',
-        borderRadius: 10, padding: '8px 14px', fontSize: 13,
+        background: 'rgba(255,255,255,0.97)', border: '1px solid rgba(164,18,42,0.15)',
+        borderRadius: 10, padding: '8px 14px', fontSize: 13, boxShadow: '0 8px 24px rgba(80,10,20,0.15)',
       }}>
         <div style={{ fontWeight: 700, color: COLORS[d.name] }}>{d.name}</div>
-        <div style={{ color: '#9898c0' }}>{d.value.toLocaleString()} feedbacks</div>
+        <div style={{ color: '#6e5250' }}>{d.value.toLocaleString()} feedbacks</div>
       </div>
     );
   };

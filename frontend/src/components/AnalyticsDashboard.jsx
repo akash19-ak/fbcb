@@ -84,15 +84,16 @@ function TopFeedbacksChart({ label, items, color, variant }) {
     const d = payload[0].payload;
     return (
       <div style={{
-        background: 'rgba(10,10,30,0.97)',
+        background: 'rgba(255,255,255,0.97)',
         border: `1px solid ${color}44`,
         borderRadius: 10,
         padding: '10px 14px',
         maxWidth: 280,
         fontSize: 12,
+        boxShadow: '0 8px 24px rgba(80,10,20,0.15)',
       }}>
         <div style={{ color, fontWeight: 700, marginBottom: 4 }}>#{d.rank} Most Repeated</div>
-        <div style={{ color: '#ccc', lineHeight: 1.5, marginBottom: 6 }}>{d.fullText}</div>
+        <div style={{ color: '#6e5250', lineHeight: 1.5, marginBottom: 6 }}>{d.fullText}</div>
         <div style={{ color, fontWeight: 700, fontSize: 14 }}>{d.count}× occurrences</div>
       </div>
     );
@@ -107,7 +108,7 @@ function TopFeedbacksChart({ label, items, color, variant }) {
           layout="vertical"
           margin={{ top: 0, right: 48, left: 0, bottom: 0 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(164,18,42,0.08)" horizontal={false} />
           <XAxis
             type="number"
             tick={{ fill: 'var(--text-muted)', fontSize: 11 }}
@@ -123,7 +124,7 @@ function TopFeedbacksChart({ label, items, color, variant }) {
             tickLine={false}
             width={140}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(164,18,42,0.05)' }} />
           <Bar dataKey="count" radius={[0, 6, 6, 0]} maxBarSize={22}>
             {data.map((_, i) => (
               <Cell
@@ -167,14 +168,15 @@ function ConfidenceCard({ summary }) {
     const d = payload[0].payload;
     return (
       <div style={{
-        background: 'rgba(10,10,30,0.97)',
+        background: 'rgba(255,255,255,0.97)',
         border: `1px solid ${d.color}44`,
         borderRadius: 10,
         padding: '8px 14px',
         fontSize: 12,
+        boxShadow: '0 8px 24px rgba(80,10,20,0.15)',
       }}>
         <div style={{ color: d.color, fontWeight: 700 }}>{d.name}</div>
-        <div style={{ color: '#ccc' }}>Avg Confidence: {d.avgConf}%</div>
+        <div style={{ color: '#6e5250' }}>Avg Confidence: {d.avgConf}%</div>
       </div>
     );
   };
@@ -184,10 +186,10 @@ function ConfidenceCard({ summary }) {
       <SectionHeader dot="positive" title="Avg. Confidence by Sentiment" />
       <ResponsiveContainer width="100%" height={180}>
         <BarChart data={data} margin={{ top: 10, right: 24, left: -10, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(164,18,42,0.08)" vertical={false} />
           <XAxis dataKey="name" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} axisLine={false} tickLine={false} />
           <YAxis domain={[0, 100]} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(164,18,42,0.05)' }} />
           <Bar dataKey="avgConf" radius={[6, 6, 0, 0]} maxBarSize={60}>
             {data.map((d, i) => (
               <Cell key={i} fill={d.color} />
@@ -228,8 +230,8 @@ function QuickStats({ summary }) {
           summary.negative.count > 0
             ? `${(summary.positive.count / summary.negative.count).toFixed(2)}x`
             : '∞'
-        } valueColor="#a855f7" />
-        <QuickStat label="Total Processed" value={summary.total.toLocaleString()} valueColor="#c084fc" />
+        } valueColor="#a4122a" />
+        <QuickStat label="Total Processed" value={summary.total.toLocaleString()} valueColor="#d81e33" />
       </div>
     </div>
   );
