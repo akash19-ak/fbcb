@@ -130,13 +130,13 @@ export default function App() {
 
   return (
     <div className="app" style={{ '--home-bg-image': `url(${symbiosisBg})` }}>
-      <header className="header">
+      <header className="header" style={{ display: 'none' }}>
         <div className="header-logo">
-          <div className="header-logo-icon">🧠</div>
-          <span className="header-logo-text">FeedbackSense</span>
+          {/* <div className="header-logo-icon">🧠</div>
+          <span className="header-logo-text">FeedbackSense</span> */}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {backendStatus === 'online' && (
+          {/* {backendStatus === 'online' && (
             <span style={{ fontSize: '0.8rem', color: '#4ade80', background: 'rgba(74, 222, 128, 0.1)', padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(74, 222, 128, 0.3)' }}>
               ● Backend Connected
             </span>
@@ -145,8 +145,8 @@ export default function App() {
             <span style={{ fontSize: '0.8rem', color: '#f87171', background: 'rgba(248, 113, 113, 0.1)', padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(248, 113, 113, 0.3)' }}>
               ● Backend Offline (Run python run.py)
             </span>
-          )}
-          <span className="header-badge">RoBERTa NLP</span>
+          )} */}
+          {/* <span className="header-badge">RoBERTa NLP</span> */}
         </div>
       </header>
 
@@ -167,9 +167,9 @@ export default function App() {
 
         {state !== 'done' && (
           <section className="hero">
-            <div className="hero-tag">✦ AI-Powered &nbsp;·&nbsp; Sentiment Analysis</div>
+            
             <h1 className="hero-title">
-              Unlock Insights from<br />Customer Feedback
+              SSODL FeedTrack
             </h1>
             <p className="hero-sub">
               Upload your Excel feedback file and get deep sentiment analysis powered by
