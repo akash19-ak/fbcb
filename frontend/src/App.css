@@ -5,14 +5,15 @@
   flex-direction: column;
 }
 
-/* Symbiosis campus BG */
+/* Symbiosis campus BG — dark maroon scrim over the photo up top (behind the
+   hero), fading down into the light dashboard surface further down the page. */
 .app::before {
   content: '';
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(180deg, rgba(253,247,246,0.90) 0%, rgba(253,247,246,0.94) 55%, rgba(253,247,246,0.98) 100%),
-    radial-gradient(ellipse 70% 40% at 15% 0%, rgba(164,18,42,0.08) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(18,3,6,0.62) 0%, rgba(35,6,10,0.56) 30%, rgba(60,12,18,0.42) 55%, rgba(253,247,246,0.90) 82%, rgba(253,247,246,0.97) 100%),
+    radial-gradient(ellipse 70% 40% at 15% 0%, rgba(216,30,51,0.15) 0%, transparent 60%),
     var(--home-bg-image, none);
   background-size: cover, cover, cover;
   background-position: center, center, center 20%;
@@ -27,7 +28,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
   padding: 0 24px;
@@ -99,9 +100,10 @@
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--accent-light);
-  background: rgba(164,18,42,0.12);
-  border: 1px solid rgba(164,18,42,0.25);
+  color: #ffd9df;
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(6px);
   padding: 5px 14px;
   border-radius: 20px;
   margin-bottom: 20px;
@@ -114,18 +116,20 @@
   font-weight: 900;
   line-height: 1.1;
   margin-bottom: 16px;
-  background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-light) 100%);
+  background: linear-gradient(135deg, #fff 30%, #ff8a9b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-shadow: 0 4px 24px rgba(0,0,0,0.25);
 }
 
 .hero-sub {
   font-size: 17px;
-  color: var(--text-secondary);
+  color: rgba(255,255,255,0.88);
   max-width: 520px;
   margin: 0 auto 36px;
   line-height: 1.7;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.35);
 }
 
 /* ─── Upload Card ─────────────────────────────────────────────── */
@@ -716,8 +720,9 @@
   gap: 14px;
   padding: 18px 20px;
   border-radius: var(--radius-sm);
-  background: rgba(220,38,38,0.08);
-  border: 1px solid rgba(220,38,38,0.25);
+  background: rgba(255,245,245,0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(220,38,38,0.3);
   color: #991b1b;
   font-size: 14px;
   max-width: 640px;
