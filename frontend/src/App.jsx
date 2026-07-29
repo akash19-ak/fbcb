@@ -8,7 +8,7 @@ import ProcessingView from './components/ProcessingView';
 import ResultsDashboard from './components/ResultsDashboard';
 
 // Served from /public — a missing file here 404s quietly instead of breaking the build.
-const symbiosisBg = '/symbiosis-bg.jpg';
+const symbiosisBg = '/symbiosis-bg.png';
 
 const PRIMARY_API = '/api';
 const FALLBACK_API = 'http://127.0.0.1:8000/api';
