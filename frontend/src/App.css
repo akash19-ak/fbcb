@@ -16,11 +16,27 @@
     radial-gradient(ellipse 70% 40% at 15% 0%, rgba(216,30,51,0.15) 0%, transparent 60%),
     var(--home-bg-image, none);
   background-size: cover, cover, cover;
-  background-position: center, center, center 20%;
+  background-position: center, 15% 0%, center 20%;
   background-repeat: no-repeat;
   background-attachment: fixed;
   pointer-events: none;
   z-index: 0;
+  transform-origin: center;
+  animation: bg-pan 26s ease-in-out infinite alternate, bg-glow-drift 14s ease-in-out infinite;
+}
+
+@keyframes bg-pan {
+  0%   { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.06) translate(-1%, -1%); }
+}
+
+@keyframes bg-glow-drift {
+  0%, 100% { background-position: center, 15% 0%, center 20%; }
+  50%      { background-position: center, 30% 8%, center 20%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app::before { animation: none; }
 }
 
 /* ─── Header ─────────────────────────────────────────────────── */
