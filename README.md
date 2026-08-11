@@ -1,6 +1,6 @@
 # FeedbackSense 🧠
 
-AI-powered sentiment analysis for Excel feedback files, built with **FastAPI + HuggingFace RoBERTa + React**.
+AI-powered sentiment analysis for feedback files, built with **FastAPI + HuggingFace RoBERTa + React**.
 
 ---
 
@@ -71,7 +71,7 @@ The UI will open at **http://localhost:5173**
 
 ---
 
-### 3. Generate a Sample Excel File
+### 3. Generate an Optional Sample Feedback File
 
 ```bash
 cd backend
@@ -83,7 +83,7 @@ python generate_sample.py
 
 ## 📊 Sample Input Format
 
-Your Excel file must contain a column named **`feedback`** (case-insensitive):
+Your feedback file must contain a text column with free-form comments, ideally named **`feedback`** (case-insensitive):
 
 | feedback |
 |----------|

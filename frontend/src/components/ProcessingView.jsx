@@ -1,7 +1,7 @@
 import { Brain, CheckCircle2, Loader2 } from 'lucide-react';
 
 const STAGES = [
-  { label: 'Reading Excel file…', icon: '📄' },
+  { label: 'Reading feedback file…', icon: '📄' },
   { label: 'Tokenizing feedback data…', icon: '🔤' },
   { label: 'Running RoBERTa inference…', icon: '🧠' },
   { label: 'Classifying sentiments…', icon: '📊' },

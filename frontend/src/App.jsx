@@ -7,23 +7,20 @@ import UploadZone from './components/UploadZone';
 import ProcessingView from './components/ProcessingView';
 import ResultsDashboard from './components/ResultsDashboard';
 
-// Served from /public — a missing file here 404s quietly instead of breaking the build.
 const symbiosisBg = '/symbiosis-bg.png';
 
 const PRIMARY_API = '/api';
 const FALLBACK_API = 'http://127.0.0.1:8000/api';
 
 export default function App() {
-  const [file, setFile]             = useState(null);
-  const [columnName, setColumnName] = useState('feedback');
-  const [state, setState]           = useState('idle');   // idle | processing | done | error
-  const [progress, setProgress]     = useState(0);
-  const [result, setResult]         = useState(null);
-  const [error, setError]           = useState('');
+  const [file, setFile]           = useState(null);
+  const [state, setState]         = useState('idle'); // idle | processing | done | error
+  const [progress, setProgress]   = useState(0);
+  const [result, setResult]       = useState(null);
+  const [error, setError]         = useState('');
   const [downloading, setDownloading] = useState(false);
-  const [backendStatus, setBackendStatus] = useState('checking'); // checking | online | offline
+  const [backendStatus, setBackendStatus] = useState('checking');
 
-  // Check backend server status on mount
   useEffect(() => {
     const checkBackend = async () => {
       try {
@@ -41,7 +38,6 @@ export default function App() {
     checkBackend();
   }, []);
 
-  // Fake progress ticker while backend processes
   useEffect(() => {
     let timer;
     if (state === 'processing') {
@@ -57,12 +53,11 @@ export default function App() {
   }, [state]);
 
   const postWithFallback = async (endpoint, data, config = {}) => {
-    // Try primary proxy endpoint first, fallback to direct backend URL if network error occurs
     try {
       return await axios.post(`${PRIMARY_API}${endpoint}`, data, config);
     } catch (err) {
       if (err.message === 'Network Error' || !err.response) {
-        console.warn(`Primary endpoint ${PRIMARY_API}${endpoint} failed with network error. Trying fallback endpoint ${FALLBACK_API}${endpoint}...`);
+        console.warn(`Primary endpoint failed. Trying fallback…`);
         return await axios.post(`${FALLBACK_API}${endpoint}`, data, config);
       }
       throw err;
@@ -77,11 +72,11 @@ export default function App() {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('feedback_column', columnName || 'feedback');
+    // No feedback_column — backend auto-detects all question types
 
     try {
       const res = await postWithFallback('/analyze', formData, {
-        timeout: 600_000, // 10 min timeout for large files
+        timeout: 600_000,
       });
       setProgress(100);
       setTimeout(() => {
@@ -130,25 +125,7 @@ export default function App() {
 
   return (
     <div className="app" style={{ '--home-bg-image': `url(${symbiosisBg})` }}>
-      <header className="header" style={{ display: 'none' }}>
-        <div className="header-logo">
-          {/* <div className="header-logo-icon">🧠</div>
-          <span className="header-logo-text">FeedbackSense</span> */}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {/* {backendStatus === 'online' && (
-            <span style={{ fontSize: '0.8rem', color: '#4ade80', background: 'rgba(74, 222, 128, 0.1)', padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(74, 222, 128, 0.3)' }}>
-              ● Backend Connected
-            </span>
-          )}
-          {backendStatus === 'offline' && (
-            <span style={{ fontSize: '0.8rem', color: '#f87171', background: 'rgba(248, 113, 113, 0.1)', padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(248, 113, 113, 0.3)' }}>
-              ● Backend Offline (Run python run.py)
-            </span>
-          )} */}
-          {/* <span className="header-badge">RoBERTa NLP</span> */}
-        </div>
-      </header>
+      <header className="header" style={{ display: 'none' }} />
 
       <main className="main">
         {backendStatus === 'offline' && (
@@ -167,13 +144,10 @@ export default function App() {
 
         {state !== 'done' && (
           <section className="hero">
-            
-            <h1 className="hero-title">
-              SSODL FeedTrack
-            </h1>
+            <h1 className="hero-title">SSODL FeedTrack</h1>
             <p className="hero-sub">
-              Upload your Excel feedback file and get deep sentiment analysis powered by
-              RoBERTa — classifying every row as Positive, Negative, or Neutral in seconds.
+              Upload <strong>any</strong> feedback file — Likert scales, ratings, multiple-choice, open text —
+              and get deep per-question analytics powered by RoBERTa AI in seconds.
             </p>
           </section>
         )}
@@ -184,8 +158,6 @@ export default function App() {
               file={file}
               onFileSelect={setFile}
               onClear={() => setFile(null)}
-              columnName={columnName}
-              onColumnChange={setColumnName}
             />
             {error && (
               <div className="error-card">
@@ -200,7 +172,7 @@ export default function App() {
                 onClick={handleAnalyze}
                 style={{ minWidth: 200, justifyContent: 'center', animation: 'pulse-glow 2s infinite' }}
               >
-                🚀 Analyze Sentiments
+                🚀 Analyze Feedback
               </button>
             )}
           </div>

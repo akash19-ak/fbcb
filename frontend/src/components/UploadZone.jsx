@@ -2,7 +2,7 @@ import { Upload, FileCheck2, X } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-export default function UploadZone({ onFileSelect, file, onClear, columnName, onColumnChange }) {
+export default function UploadZone({ onFileSelect, file, onClear }) {
   const [drag, setDrag] = useState(false);
 
   const onDrop = useCallback((accepted) => {
@@ -12,7 +12,13 @@ export default function UploadZone({ onFileSelect, file, onClear, columnName, on
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'], 'application/vnd.ms-excel': ['.xls'] },
+    accept: {
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+      'application/vnd.ms-excel': ['.xls'],
+      'text/csv': ['.csv'],
+      'text/tab-separated-values': ['.tsv'],
+      'text/plain': ['.txt'],
+    },
     multiple: false,
     onDragEnter: () => setDrag(true),
     onDragLeave: () => setDrag(false),
@@ -26,12 +32,16 @@ export default function UploadZone({ onFileSelect, file, onClear, columnName, on
           <Upload size={28} />
         </div>
         <div className="upload-title">
-          {file ? 'File Ready' : 'Drop your Excel file here'}
+          {file ? 'File Ready' : 'Drop your feedback file here'}
         </div>
         <div className="upload-sub">
-          {file ? 'Click to replace the file' : 'or click to browse from your computer'}
+          {file
+            ? 'Click to replace the file'
+            : 'Supports any survey / feedback format — column types detected automatically'}
         </div>
-        <span className="upload-badge">.xlsx &nbsp;·&nbsp; .xls &nbsp;·&nbsp; Max 20 MB</span>
+        <span className="upload-badge">
+          .xlsx &nbsp;·&nbsp; .xls &nbsp;·&nbsp; .csv &nbsp;·&nbsp; .tsv &nbsp;·&nbsp; .txt &nbsp;·&nbsp; Max 20 MB
+        </span>
 
         {file && (
           <div className="upload-filename">
@@ -41,15 +51,11 @@ export default function UploadZone({ onFileSelect, file, onClear, columnName, on
         )}
       </div>
 
-      <div className="column-config">
-        <label htmlFor="col-input">Feedback column name:</label>
-        <input
-          id="col-input"
-          type="text"
-          value={columnName}
-          onChange={(e) => onColumnChange(e.target.value)}
-          placeholder="feedback"
-        />
+      <div className="upload-hints">
+        <div className="upload-hint-chip">📊 Likert Scales</div>
+        <div className="upload-hint-chip">⭐ Ratings</div>
+        <div className="upload-hint-chip">🔘 Multiple Choice</div>
+        <div className="upload-hint-chip">💬 Open Text</div>
       </div>
 
       {file && (

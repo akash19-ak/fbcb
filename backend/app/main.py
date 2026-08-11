@@ -19,7 +19,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="FeedbackSense API",
-    description="Sentiment analysis API for Excel feedback files",
+    description="Sentiment analysis API for feedback files",
     version="1.0.0",
     lifespan=lifespan,
 )

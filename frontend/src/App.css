@@ -901,3 +901,30 @@
   line-height: 1.2;
 }
 
+/* ─── Upload Hints ─────────────────────────────────────────────── */
+.upload-hints {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.upload-hint-chip {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: var(--text-secondary);
+  backdrop-filter: blur(8px);
+  transition: all 0.2s;
+}
+
+.upload-hint-chip:hover {
+  border-color: var(--accent-light);
+  color: var(--accent-light);
+  background: rgba(164,18,42,0.08);
+}
+
