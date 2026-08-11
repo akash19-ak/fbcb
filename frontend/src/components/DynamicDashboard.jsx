@@ -210,10 +210,12 @@ function TextCard({ q, accent }) {
         {tabs.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
             style={{
-              padding: '4px 12px', borderRadius: 20, border: 'none', cursor: 'pointer', fontSize: 12,
-              background: tab === t.id ? accent : 'rgba(255,255,255,0.07)',
-              color: tab === t.id ? '#000' : 'var(--text-muted)',
-              fontWeight: tab === t.id ? 700 : 400,
+              padding: '5px 14px', borderRadius: 20, border: 'none', cursor: 'pointer', fontSize: 12,
+              background: tab === t.id ? accent : '#f1f5f9',
+              color: tab === t.id ? '#ffffff' : '#475569',
+              fontWeight: tab === t.id ? 700 : 500,
+              boxShadow: tab === t.id ? '0 2px 8px rgba(0,0,0,0.15)' : 'none',
+              transition: 'all 0.15s',
             }}>
             {t.label}
           </button>
@@ -224,15 +226,15 @@ function TextCard({ q, accent }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {(q.top_positive || []).slice(0, 6).map((item, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 10, color: '#22c55e', fontWeight: 700, minWidth: 20 }}>#{i + 1}</span>
-              <div style={{ flex: 1, background: 'rgba(34,197,94,0.08)', borderRadius: 8, padding: '6px 10px', borderLeft: '3px solid #22c55e' }}>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.4 }}>{item.text}</div>
+              <span style={{ fontSize: 11, color: '#16a34a', fontWeight: 700, minWidth: 22 }}>#{i + 1}</span>
+              <div style={{ flex: 1, background: '#f0fdf4', borderRadius: 8, padding: '8px 12px', borderLeft: '3px solid #16a34a', border: '1px solid #dcfce7', borderLeftWidth: 3 }}>
+                <div style={{ fontSize: 13, color: '#15803d', lineHeight: 1.4, fontWeight: 500 }}>{item.text}</div>
               </div>
-              <span style={{ fontSize: 11, color: '#22c55e', fontWeight: 700 }}>×{item.count}</span>
+              <span style={{ fontSize: 12, color: '#16a34a', fontWeight: 700, background: '#dcfce7', padding: '2px 8px', borderRadius: 12 }}>×{item.count}</span>
             </div>
           ))}
           {(!q.top_positive || q.top_positive.length === 0) && (
-            <div style={{ color: 'var(--text-muted)', fontSize: 13, padding: '12px 0' }}>No repeated positive responses</div>
+            <div style={{ color: '#94a3b8', fontSize: 13, padding: '12px 0' }}>No repeated positive responses</div>
           )}
         </div>
       )}
@@ -241,15 +243,15 @@ function TextCard({ q, accent }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {(q.top_negative || []).slice(0, 6).map((item, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 10, color: '#ef4444', fontWeight: 700, minWidth: 20 }}>#{i + 1}</span>
-              <div style={{ flex: 1, background: 'rgba(239,68,68,0.08)', borderRadius: 8, padding: '6px 10px', borderLeft: '3px solid #ef4444' }}>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.4 }}>{item.text}</div>
+              <span style={{ fontSize: 11, color: '#dc2626', fontWeight: 700, minWidth: 22 }}>#{i + 1}</span>
+              <div style={{ flex: 1, background: '#fef2f2', borderRadius: 8, padding: '8px 12px', borderLeft: '3px solid #dc2626', border: '1px solid #fee2e2', borderLeftWidth: 3 }}>
+                <div style={{ fontSize: 13, color: '#b91c1c', lineHeight: 1.4, fontWeight: 500 }}>{item.text}</div>
               </div>
-              <span style={{ fontSize: 11, color: '#ef4444', fontWeight: 700 }}>×{item.count}</span>
+              <span style={{ fontSize: 12, color: '#dc2626', fontWeight: 700, background: '#fee2e2', padding: '2px 8px', borderRadius: 12 }}>×{item.count}</span>
             </div>
           ))}
           {(!q.top_negative || q.top_negative.length === 0) && (
-            <div style={{ color: 'var(--text-muted)', fontSize: 13, padding: '12px 0' }}>No repeated negative responses</div>
+            <div style={{ color: '#94a3b8', fontSize: 13, padding: '12px 0' }}>No repeated negative responses</div>
           )}
         </div>
       )}
@@ -257,19 +259,20 @@ function TextCard({ q, accent }) {
       {tab === 'samples' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 260, overflowY: 'auto' }}>
           {(q.samples || []).map((s, i) => {
-            const color = s.label === 'Positive' ? '#22c55e' : s.label === 'Negative' ? '#ef4444' : '#eab308';
+            const color = s.label === 'Positive' ? '#16a34a' : s.label === 'Negative' ? '#dc2626' : '#ca8a04';
+            const bg = s.label === 'Positive' ? '#f0fdf4' : s.label === 'Negative' ? '#fef2f2' : '#fefce8';
             return (
-              <div key={i} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '8px 12px',
-                                    borderLeft: `3px solid ${color}` }}>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{s.text}</div>
-                <div style={{ fontSize: 10, color, marginTop: 4, fontWeight: 600 }}>
+              <div key={i} style={{ background: bg, borderRadius: 8, padding: '8px 12px',
+                                    borderLeft: `3px solid ${color}`, border: '1px solid rgba(0,0,0,0.05)', borderLeftWidth: 3 }}>
+                <div style={{ fontSize: 13, color: '#1e293b', lineHeight: 1.5 }}>{s.text}</div>
+                <div style={{ fontSize: 11, color, marginTop: 4, fontWeight: 700 }}>
                   {s.label} &nbsp;·&nbsp; {(s.score * 100).toFixed(0)}% confidence
                 </div>
               </div>
             );
           })}
           {(!q.samples || q.samples.length === 0) && (
-            <div style={{ color: 'var(--text-muted)', fontSize: 13, padding: '12px 0' }}>No samples</div>
+            <div style={{ color: '#94a3b8', fontSize: 13, padding: '12px 0' }}>No samples</div>
           )}
         </div>
       )}
@@ -288,14 +291,14 @@ function OverviewStrip({ questions }) {
 
   const typeOrder = ['likert', 'rating', 'choice', 'text'];
   return (
-    <div className="card analytics-card" style={{ marginBottom: 24 }}>
+    <div className="card analytics-card" style={{ marginBottom: 24, background: '#ffffff', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
+          <div style={{ fontSize: 18, fontWeight: 800, color: '#0f172a', marginBottom: 4 }}>
             📊 {questions.length} Questions Detected
           </div>
-          <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
-            ~{totalRespondents} respondents · auto-classified by type
+          <div style={{ fontSize: 13, color: '#64748b' }}>
+            ~{totalRespondents.toLocaleString()} respondents · auto-classified by type
           </div>
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -325,7 +328,8 @@ function QuestionCard({ q, index }) {
   return (
     <div className="card analytics-card" style={{
       border: `1px solid ${meta.border}`,
-      background: 'var(--card-bg)',
+      background: '#ffffff',
+      boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
       marginBottom: 16,
     }}>
       {/* Card header */}
@@ -340,16 +344,16 @@ function QuestionCard({ q, index }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
             <span style={{
-              fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
-              padding: '2px 8px', borderRadius: 99, background: meta.bg,
+              fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+              padding: '3px 10px', borderRadius: 99, background: meta.bg,
               color: meta.accent, border: `1px solid ${meta.border}`,
             }}>
               {meta.label}
             </span>
-            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Q{index + 1}</span>
+            <span style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>Q{index + 1}</span>
           </div>
           <div style={{
-            fontSize: 14, fontWeight: 700, color: 'var(--text-primary)',
+            fontSize: 15, fontWeight: 800, color: '#0f172a',
             marginTop: 6, lineHeight: 1.35,
           }}>
             {q.name}
@@ -390,8 +394,8 @@ export default function DynamicDashboard({ summary }) {
   return (
     <div className="analytics-section">
       <div className="analytics-header">
-        <div className="analytics-title">🔍 Dynamic Feedback Analysis</div>
-        <div className="analytics-sub">Every question analysed by its type — automatically</div>
+        <div className="analytics-title" style={{ color: '#0f172a', fontSize: 22, fontWeight: 800 }}>🔍 Dynamic Feedback Analysis</div>
+        <div className="analytics-sub" style={{ color: '#475569', fontSize: 13 }}>Every question analysed by its type — automatically</div>
       </div>
 
       <OverviewStrip questions={questions} />
@@ -401,11 +405,12 @@ export default function DynamicDashboard({ summary }) {
         {TYPE_FILTERS.map(f => (
           <button key={f.id} onClick={() => setFilter(f.id)}
             style={{
-              padding: '6px 16px', borderRadius: 20, border: '1px solid',
-              cursor: 'pointer', fontSize: 13, fontWeight: 600,
-              background: filter === f.id ? 'var(--accent)' : 'rgba(255,255,255,0.06)',
-              color: filter === f.id ? '#fff' : 'var(--text-muted)',
-              borderColor: filter === f.id ? 'var(--accent)' : 'rgba(255,255,255,0.12)',
+              padding: '7px 18px', borderRadius: 20, border: '1px solid',
+              cursor: 'pointer', fontSize: 13, fontWeight: 700,
+              background: filter === f.id ? 'var(--accent)' : '#ffffff',
+              color: filter === f.id ? '#ffffff' : '#475569',
+              borderColor: filter === f.id ? 'var(--accent)' : '#cbd5e1',
+              boxShadow: filter === f.id ? '0 4px 12px var(--accent-glow)' : '0 2px 6px rgba(0,0,0,0.04)',
               transition: 'all 0.2s',
             }}>
             {f.label}
@@ -416,16 +421,17 @@ export default function DynamicDashboard({ summary }) {
           onChange={e => setSearch(e.target.value)}
           placeholder="🔎 Search questions…"
           style={{
-            marginLeft: 'auto', padding: '6px 14px', borderRadius: 20,
-            border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)',
-            color: 'var(--text-primary)', fontSize: 13, outline: 'none', minWidth: 200,
+            marginLeft: 'auto', padding: '7px 16px', borderRadius: 20,
+            border: '1px solid #cbd5e1', background: '#ffffff',
+            color: '#0f172a', fontSize: 13, outline: 'none', minWidth: 220,
+            boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
           }}
         />
       </div>
 
       {/* Question cards */}
       {filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 48 }}>
+        <div style={{ textAlign: 'center', color: '#64748b', padding: 48, background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0' }}>
           No questions match your filter.
         </div>
       ) : (

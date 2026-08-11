@@ -3,7 +3,7 @@ import DynamicDashboard from './DynamicDashboard';
 import SampleTable from './SampleTable';
 
 export default function ResultsDashboard({ data, onReset, onDownload, downloading }) {
-  const { filename, summary, rows, total_rows, available_columns } = data;
+  const { filename, summary, rows, total_rows } = data;
   const questions = summary?.questions || [];
 
   // Aggregate stats across all questions
@@ -13,11 +13,10 @@ export default function ResultsDashboard({ data, onReset, onDownload, downloadin
   const choiceQ   = questions.filter(q => q.type === 'choice');
 
   // Overall sentiment from text questions (weighted avg)
-  let totalPos = 0, totalNeg = 0, totalNeu = 0, totalText = 0;
+  let totalPos = 0, totalNeg = 0, totalText = 0;
   textQ.forEach(q => {
     totalPos += q.positive_count || 0;
     totalNeg += q.negative_count || 0;
-    totalNeu += q.neutral_count || 0;
     totalText += q.total || 0;
   });
 
@@ -32,18 +31,18 @@ export default function ResultsDashboard({ data, onReset, onDownload, downloadin
     : null;
 
   return (
-    <div className="results">
+    <div className="results-surface">
       {/* ── Header ── */}
       <div className="results-header">
         <div>
           <div className="results-title">Analysis Results</div>
-          <div className="results-meta">
-            📄 {filename} &nbsp;·&nbsp; {(total_rows || 0).toLocaleString()} rows &nbsp;·&nbsp;
-            {questions.length} questions detected
+          <div className="results-meta-pill">
+            📄 <strong>{filename}</strong> &nbsp;·&nbsp; {(total_rows || 0).toLocaleString()} rows &nbsp;·&nbsp;
+            <strong>{questions.length} questions detected</strong>
           </div>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-          <button className="btn btn-outline" onClick={onReset} id="reset-btn">
+          <button className="btn btn-outline" onClick={onReset} id="reset-btn" style={{ background: '#ffffff', color: '#0f172a', borderColor: '#cbd5e1' }}>
             <RefreshCw size={15} /> New File
           </button>
           <button className="btn btn-primary" onClick={onDownload} disabled={downloading} id="download-btn">
@@ -90,7 +89,7 @@ function StatCard({ variant, label, value, icon, note }) {
       <div className="stat-icon">{icon}</div>
       <div className="stat-label">{label}</div>
       <div className="stat-value">{value}</div>
-      {note && <div className="stat-pct" style={{ opacity: 0.7 }}>{note}</div>}
+      {note && <div className="stat-pct">{note}</div>}
     </div>
   );
 }
